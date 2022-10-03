@@ -1,9 +1,10 @@
-import { Component, createElement } from "../lib/react/index.js";
+import { Component } from "../lib/react/index.js";
 import styled from "../lib/styled-components.js";
 import Wrapper from "./Wrapper.js";
 import MovieItem from "./MovieItem.js";
-// import movies from "../data/movies.js";
 import store from "../store.js";
+import ModelMovie from "../api.js";
+import { ADD_MOVIES } from "../actions/index.js";
 
 const MovieListStyled = styled.section`
   display: grid;
@@ -14,6 +15,35 @@ const MovieListStyled = styled.section`
 `;
 
 export default class MovieList extends Component {
+  state = {
+    currentPage: 1,
+  };
+
+  async getMovies(page) {
+    const { results } = await ModelMovie.movies({ page });
+    store.dispatch({
+      type: ADD_MOVIES,
+      payload: results,
+    });
+  }
+
+  handleOberver = ([entry]) => {
+    const { isIntersecting } = entry;
+    if (!isIntersecting) return;
+    this.getMovies(this.state.currentPage);
+    this.setState({
+      currentPage: this.state.currentPage + 1,
+    });
+  };
+
+  componentDidMount() {
+    let $target = document.querySelector("#intersecting");
+    const observer = new IntersectionObserver(this.handleOberver);
+    observer.observe($target);
+    store.subscribe(() => {
+      this.setState();
+    });
+  }
   render() {
     const state = store.getState();
     const movieList = state.movieList;

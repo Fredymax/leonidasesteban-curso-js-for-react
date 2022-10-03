@@ -86,3 +86,8 @@ body {
   border: 2px solid white;
   box-shadow: 0 0 0 2px #3f69ff;
 }
+
+#intersecting {
+  inline-size: 100%;
+  block-size: 10px;
+}

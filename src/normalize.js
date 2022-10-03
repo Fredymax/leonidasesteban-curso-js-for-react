@@ -1,25 +1,25 @@
-const moviesAsMap = (movies) =>
-  movies.reduce((acc, movie) => {
+const moviesAsMap = (newValue, oldValue = new Map()) =>
+  newValue.reduce((acc, movie) => {
     acc.set(movie.id, movie);
     return acc;
-  }, new Map());
+  }, oldValue);
 
-const getAllIds = (movies) => movies.map((movie) => movie.id);
+const getAllIds = (newValue, oldValue = []) => oldValue.concat(newValue.map((movie) => movie.id));
 
-const getMostValuedIds = (movies) =>
-  movies.reduce((list, movie) => {
-    if (movie.vote_average > 7) {
+const getMostValuedIds = (newValue, oldValue = []) =>
+  newValue.reduce((list, movie) => {
+    if (movie.vote_average >= 7) {
       list.push(movie.id);
     }
     return list;
-  }, []);
+  }, oldValue);
 
-const getLeastValuedIds = (movies) =>
-  movies.reduce((list, movie) => {
-    if (movie.vote_average <= 7) {
+const getLeastValuedIds = (newValue, oldValue = []) =>
+  newValue.reduce((list, movie) => {
+    if (movie.vote_average < 7) {
       list.push(movie.id);
     }
     return list;
-  }, []);
+  }, oldValue);
 
 export { moviesAsMap, getAllIds, getMostValuedIds, getLeastValuedIds };
